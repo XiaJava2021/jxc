@@ -1,15 +1,12 @@
 package com.atguigu.jxc.service.impl;
 
 import com.atguigu.jxc.dao.GoodsDao;
-import com.atguigu.jxc.domain.ErrorCode;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
-import com.atguigu.jxc.entity.Log;
-import com.atguigu.jxc.service.CustomerReturnListGoodsService;
 import com.atguigu.jxc.service.GoodsService;
-import com.atguigu.jxc.service.LogService;
-import com.atguigu.jxc.service.SaleListGoodsService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +41,19 @@ public class GoodsServiceImpl implements GoodsService {
 
         }
         return new ServiceVO<>(SuccessCode.SUCCESS_CODE, SuccessCode.SUCCESS_MESS, unitCode);
+    }
+
+    @Override
+    public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
+        PageHelper.startPage(page,rows);
+        List<Goods> list = goodsDao.queryStock(codeOrName,goodsTypeId);
+        PageInfo<Goods> pageInfo = new PageInfo<Goods>(list);
+        long total = pageInfo.getTotal();
+        List<Goods> goods = pageInfo.getList();
+        Map<String, Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("rows",goods);
+        return result;
     }
 
 

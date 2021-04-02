@@ -1,13 +1,12 @@
 package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
-import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.service.GoodsService;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -15,6 +14,8 @@ import java.util.Map;
 /**
  * @description 商品信息Controller
  */
+@RestController
+@CrossOrigin
 public class GoodsController {
 
     @Autowired
@@ -28,7 +29,10 @@ public class GoodsController {
      * @param goodsTypeId 商品类别ID
      * @return
      */
-
+    @PostMapping("goods/listInventory")
+    public Map<String,Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId){
+        return goodsService.listInventory(page,rows,codeOrName,goodsTypeId);
+    }
 
     /**
      * 分页查询商品信息
