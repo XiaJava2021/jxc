@@ -48,9 +48,9 @@ public class GoodsController {
     public Map<String,Object> queryUnitList(){
 
         List<Unit> list = goodsService.queryUnitList();
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("rows",list);
-        return map;
+        HashMap<String, Object> unitMap = new HashMap<>();
+        unitMap.put("rows",list);
+        return unitMap;
     }
 
 
