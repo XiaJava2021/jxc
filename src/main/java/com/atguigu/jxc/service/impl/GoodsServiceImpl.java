@@ -5,14 +5,23 @@ import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.DamageListGoods;
 import com.atguigu.jxc.entity.Goods;
+
 import com.atguigu.jxc.entity.OverflowList;
 import com.atguigu.jxc.entity.OverflowListGoods;
+
+import com.atguigu.jxc.entity.GoodsType;
+
+import com.atguigu.jxc.entity.Unit;
+
+
+import com.atguigu.jxc.entity.vo.GoodsTypeVo;
+
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +33,7 @@ import java.util.stream.Collectors;
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
-    @Autowired
+    @Resource
     private GoodsDao goodsDao;
 
     @Override
@@ -68,6 +77,7 @@ public class GoodsServiceImpl implements GoodsService {
         return map;
     }
 
+
     @Override
     public Map<String, Object> queryOverflowList(String sTime, String eTime) {
         HashMap<String, Object> map = new HashMap<>();
@@ -83,4 +93,78 @@ public class GoodsServiceImpl implements GoodsService {
         map.put("rows", overflowListGoods);
         return map;
     }
+
+
+
+
+    @Override
+    public Map<String, Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId) {
+        PageHelper.startPage(page,rows);
+        List<Goods> list = goodsDao.queryGoods(goodsName,goodsTypeId);
+        PageInfo<Goods> pageInfo = new PageInfo<Goods>(list);
+        long total = pageInfo.getTotal();
+        List<Goods> goods = pageInfo.getList();
+        Map<String, Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("rows",goods);
+
+        return result;
+
+    }
+
+    @Override
+    public List<GoodsTypeVo> queryAllGoodsType() {
+
+        //方法3.1
+        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+        return collect;
+    }
+
+    @Override
+    public List<Unit> queryUnitList() {
+        List<Unit> unitList = goodsDao.queryUnitList();
+        return unitList;
+    }
+
+
+
+        //方法1
+        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+
+        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+
+        return collect;
+    }
+
+
+    private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
+        return goodsTypes.stream().map(goodsType -> {
+            GoodsTypeVo vo = new GoodsTypeVo();
+            vo.setId(goodsType.getGoodsTypeId());
+            vo.setText(goodsType.getGoodsTypeName());
+            switch (goodsType.getGoodsTypeState()) {
+                case 1:
+                    vo.setState("closed");
+                default:
+                    vo.setState("open");
+            }
+
+
+
+            vo.setIconCls("goods-type");
+            HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+            stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
+            vo.setAttributes(stringIntegerHashMap);
+
+            if (goodsType.getGoodsTypeId() != null) {
+                List<GoodsType> goodsTypes1 = goodsDao.queryAllGoodsTypeByPid(goodsType.getGoodsTypeId());
+
+                List<GoodsTypeVo> goodsTypeVos = this.getGoodsTypeVos(goodsTypes1);
+                vo.setChildren(goodsTypeVos);
+            }
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
 }

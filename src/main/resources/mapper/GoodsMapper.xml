@@ -69,6 +69,25 @@
         <result column="sale_total" property="saleTotal"/>
     </resultMap>
 
+    <resultMap id="queryGoodsMap" type="com.atguigu.jxc.entity.Goods">
+        <id column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="inventory_quantity" property="inventoryQuantity"/>
+        <result column="last_purchasing_price" property="lastPurchasingPrice"/>
+        <result column="min_num" property="minNum"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_producer" property="goodsProducer"/>
+        <result column="purchasing_price" property="purchasingPrice"/>
+        <result column="remarks" property="remarks"/>
+        <result column="selling_price" property="sellingPrice"/>
+        <result column="state" property="state"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+        <result column="goods_type_name" property="goodsTypeName"/>
+        <result column="sale_total" property="saleTotal"/>
+    </resultMap>
+
     <select id="queryStock" resultMap="queryStockMap">
         SELECT
         t1.*,
@@ -145,4 +164,54 @@
         WHERE
             overflow_list_id=#{overflowListId}
     </select>
+
+    <select id="queryGoods" resultMap="queryGoodsMap">
+        SELECT
+            t1.*,
+            t2.goods_type_name
+        FROM
+            t_goods t1
+        JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="goodsName != null">
+                (t1.goods_name LIKE CONCAT('%',#{goodsName},'%')
+                OR t1.goods_type_id = #{goodsTypeId})
+            </if>
+            <if test="goodsTypeId != null">
+                AND t2.goods_type_id = #{goodsTypeId}
+            </if>
+        </where>
+        GROUP BY
+            goods_id
+
+    </select>
+
+
+
+    <select id="queryGoodsTypes" resultType="java.lang.String">
+        SELECT t2.goods_type_name
+        FROM t_goods_type
+    </select>
+
+
+
+
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
+    </select>
+    <select id="queryUnitList" resultType="com.atguigu.jxc.entity.Unit">
+        SELECT t1.unit_id unitId,t1.unit_name unitName
+        FROM  t_unit t1
+    </select>
+
+
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
+    </select>
+
+
 </mapper>

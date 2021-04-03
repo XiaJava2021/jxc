@@ -2,11 +2,16 @@ package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.entity.DamageListGoods;
+import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.Unit;
+import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
+import com.google.gson.Gson;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +24,37 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
+
+    /**
+     * 查询商品所有分类
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("goodsType/loadGoodsType")
+    public String queryAllGoodsType(){
+        List<GoodsTypeVo> list = goodsService.queryAllGoodsType();
+
+        Gson gson = new Gson();
+        String goodsTypes = gson.toJson(list);
+        return goodsTypes;
+    }
+
+    /**
+     * 查询所有商品单位
+     * @return
+     */
+    @PostMapping("unit/list")
+    @ResponseBody
+    public Map<String,Object> queryUnitList(){
+
+        List<Unit> list = goodsService.queryUnitList();
+        HashMap<String, Object> unitMap = new HashMap<>();
+        unitMap.put("rows",list);
+        return unitMap;
+    }
+
+
 
     /**
      * 分页查询商品库存信息
@@ -42,6 +78,11 @@ public class GoodsController {
      * @param goodsTypeId 商品类别ID
      * @return
      */
+    @PostMapping("goods/list")
+    public Map<String,Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId){
+        return goodsService.list(page,rows,goodsName,goodsTypeId);
+    }
+
 
 
     /**
