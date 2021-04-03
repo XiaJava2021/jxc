@@ -5,6 +5,44 @@
 
 <mapper namespace="com.atguigu.jxc.dao.GoodsDao">
 
+    <resultMap id="DamageListGoodsMap" type="com.atguigu.jxc.entity.DamageListGoods">
+        <id column="damage_list_goods_id" property="damageListGoodsId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="price" property="price"/>
+        <result column="total" property="total"/>
+        <result column="damage_list_id" property="damageListId"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+    </resultMap>
+
+    <resultMap id="OverflowListMap" type="com.atguigu.jxc.entity.OverflowList">
+        <id column="overflow_list_id" property="overflowListId"/>
+        <result column="overflow_number" property="overflowNumber"/>
+        <result column="overflow_date" property="overflowDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="user_id" property="userId"/>
+        <result column="true_name" property="trueName"/>
+    </resultMap>
+
+    <resultMap id="OverflowListGoodsMap" type="com.atguigu.jxc.entity.OverflowListGoods">
+        <id column="overflow_list_goods_id" property="overflowListGoodsId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="price" property="price"/>
+        <result column="total" property="total"/>
+        <result column="overflow_list_id" property="overflowListId"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+    </resultMap>
+
+
     <select id="getMaxCode" resultType="java.lang.String">
         SELECT
             MAX( goods_code )
@@ -33,13 +71,13 @@
 
     <select id="queryStock" resultMap="queryStockMap">
         SELECT
-            t1.*,
-            t2.goods_type_name,
-            sum( t3.total ) sale_total
+        t1.*,
+        t2.goods_type_name,
+        sum( t3.total ) sale_total
         FROM
-            t_goods t1
-            JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
-            JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
+        t_goods t1
+        JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
+        JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
         <where>
             <if test="codeOrName != null">
                 (t1.goods_name LIKE CONCAT('%',#{codeOrName},'%')
@@ -50,8 +88,61 @@
             </if>
         </where>
         GROUP BY
-            goods_id
+        goods_id
     </select>
-
-
+    <select id="queryDamageListGoods" resultMap="DamageListGoodsMap">
+        SELECT
+            damage_list_goods_id,
+            goods_id,
+            goods_code,
+            goods_name,
+            goods_model,
+            goods_unit,
+            goods_num,
+            price,
+            total,
+            damage_list_id,
+            goods_type_id
+        FROM
+	        `t_damage_list_goods`
+        WHERE
+           damage_list_id =#{damageListId}
+    </select>
+    <select id="queryOverflowList" resultMap="OverflowListMap">
+        SELECT
+            t1.overflow_list_id,
+            t1.overflow_number,
+            t1.overflow_date,
+            t1.remarks,
+            t1.user_id,
+            t2.true_name
+        FROM
+	        t_overflow_list t1
+        JOIN
+	        t_user t2
+        ON
+	        t1.user_id = t2.user_id
+	    WHERE
+	        t1.overflow_date
+        BETWEEN
+	        #{sTime} AND #{eTime}
+    </select>
+    <select id="queryOverflowListGoods" resultMap="OverflowListGoodsMap">
+        SELECT
+            overflow_list_goods_id,
+            goods_id,
+            goods_code,
+            goods_name,
+            goods_model,
+            goods_unit,
+            goods_num,
+            price,
+            total,
+            overflow_list_id,
+            goods_type_id
+        FROM
+            `t_overflow_list_goods`
+        WHERE
+            overflow_list_id=#{overflowListId}
+    </select>
 </mapper>

@@ -18,5 +18,4 @@ public class OverflowListGoods {
   private double total;
   private Integer overflowListId;
   private Integer goodsTypeId;
-
 }
