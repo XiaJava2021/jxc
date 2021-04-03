@@ -5,15 +5,13 @@ import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.GoodsType;
-<<<<<<< HEAD
 import com.atguigu.jxc.entity.Unit;
-=======
->>>>>>> upstream/dev
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -84,7 +82,6 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<GoodsTypeVo> queryAllGoodsType() {
-<<<<<<< HEAD
         //方法3.1
         List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
         List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
@@ -96,18 +93,33 @@ public class GoodsServiceImpl implements GoodsService {
         List<Unit> unitList = goodsDao.queryUnitList();
         return unitList;
     }
-=======
 
+    @Transactional
+    @Override
+    public void saveOrUpdateGoods(Goods goods, Integer goodsId) {
 
-        //方法1
-        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+        if (goods.getState() == null) {
+            goods.setState(0);
+        }
+        if (goods.getInventoryQuantity() == null) {
+            goods.setInventoryQuantity(0);
+        }
 
-        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+        if (goodsId != null) {
+            Integer i = goodsDao.updateGoods(goods);
 
-        return collect;
+            if (i == 0) {
+                throw new RuntimeException("添加失败");
+            }
+
+        } else {
+            Integer i = goodsDao.saveGoods(goods);
+            if (i == 0) {
+                throw new RuntimeException("修改失败");
+            }
+        }
+
     }
-
->>>>>>> upstream/dev
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
@@ -120,10 +132,7 @@ public class GoodsServiceImpl implements GoodsService {
                 default:
                     vo.setState("open");
             }
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/dev
             vo.setIconCls("goods-type");
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
             stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
@@ -138,12 +147,4 @@ public class GoodsServiceImpl implements GoodsService {
             return vo;
         }).collect(Collectors.toList());
     }
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> upstream/dev
-
 }
