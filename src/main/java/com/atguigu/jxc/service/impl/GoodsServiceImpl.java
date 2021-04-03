@@ -3,16 +3,7 @@ package com.atguigu.jxc.service.impl;
 import com.atguigu.jxc.dao.GoodsDao;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
-import com.atguigu.jxc.entity.DamageListGoods;
-import com.atguigu.jxc.entity.Goods;
-
-import com.atguigu.jxc.entity.OverflowList;
-import com.atguigu.jxc.entity.OverflowListGoods;
-
-import com.atguigu.jxc.entity.GoodsType;
-
-import com.atguigu.jxc.entity.Unit;
-
+import com.atguigu.jxc.entity.*;
 
 
 import com.atguigu.jxc.entity.Unit;
@@ -158,6 +149,14 @@ public class GoodsServiceImpl implements GoodsService {
             }
         }
 
+    }
+
+    @Override
+    public Map<String, Object> queryDamageListGoodsByTime(String sTime, String eTime) {
+        List<DamageList> damageLists = goodsDao.queryDamageListGoodsByTime(sTime,eTime);
+        Map<String, Object> result = new HashMap<>();
+        result.put("rows",damageLists);
+        return result;
     }
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {

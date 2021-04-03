@@ -114,6 +114,15 @@
         <result column="sale_total" property="saleTotal"/>
     </resultMap>
 
+    <resultMap id="queryDamageListGoodsMap" type="com.atguigu.jxc.entity.DamageList">
+        <result column="damage_list_id" property="damageListId"/>
+        <result column="damage_number" property="damageNumber"/>
+        <result column="damage_date" property="damageDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="user_id" property="userId"/>
+        <result column="true_name" property="trueName"/>
+    </resultMap>
+
     <resultMap id="queryGoodsMap" type="com.atguigu.jxc.entity.Goods">
         <id column="goods_id" property="goodsId"/>
         <result column="goods_code" property="goodsCode"/>
@@ -252,8 +261,19 @@
         FROM  t_unit t1
     </select>
 
-
-
-
-
+    <select id="queryDamageListGoodsByTime" resultMap="queryDamageListGoodsMap">
+    SELECT
+        t1.damage_date,
+        t1.damage_list_id,
+        t1.damage_number,
+        t1.remarks,
+        t1.user_id,
+        t2.true_name
+    FROM
+        t_damage_list t1
+        JOIN t_user t2 ON t1.user_id = t2.user_id
+    WHERE
+        t1.damage_date &gt;= #{sTime}
+        AND t1.damage_date &lt;= #{eTime}
+</select>
 </mapper>

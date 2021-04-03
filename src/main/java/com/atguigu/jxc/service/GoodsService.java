@@ -42,12 +42,8 @@ public interface GoodsService {
 
     List<Unit> queryUnitList();
 
-
-
-
-
-    List<Unit> queryUnitList();
-
     void saveOrUpdateGoods(Goods goods, Integer goodsId);
+
+    Map<String, Object> queryDamageListGoodsByTime(String sTime, String eTime);
 
 }

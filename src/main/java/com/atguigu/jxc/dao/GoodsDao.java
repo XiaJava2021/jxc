@@ -1,14 +1,6 @@
 package com.atguigu.jxc.dao;
 
-import com.atguigu.jxc.entity.DamageListGoods;
-import com.atguigu.jxc.entity.Goods;
-
-import com.atguigu.jxc.entity.OverflowList;
-import com.atguigu.jxc.entity.OverflowListGoods;
-
-import com.atguigu.jxc.entity.GoodsType;
-
-import com.atguigu.jxc.entity.Unit;
+import com.atguigu.jxc.entity.*;
 
 
 import com.atguigu.jxc.entity.Unit;
@@ -47,10 +39,9 @@ public interface GoodsDao {
 
     List<Unit> queryUnitList();
 
-
-    List<Unit> queryUnitList();
-
     Integer updateGoods(@Param("goods") Goods goods);
 
     Integer saveGoods(@Param("goods") Goods goods);
+
+    List<DamageList> queryDamageListGoodsByTime(String sTime, String eTime);
 }
