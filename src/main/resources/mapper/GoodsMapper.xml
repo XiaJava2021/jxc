@@ -4,6 +4,51 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atguigu.jxc.dao.GoodsDao">
+    <insert id="saveGoods">
+        INSERT INTO t_goods  (
+            goods_code,
+            goods_name,
+            inventory_quantity,
+            min_num,
+            goods_model,
+            goods_producer,
+            purchasing_price,
+            last_purchasing_price,
+            remarks,
+            selling_price,
+            state,
+            goods_unit,
+            goods_type_id
+            )
+        VALUES
+            (
+            #{goods.goodsCode},
+            #{goods.goodsName},#{goods.inventoryQuantity},
+            #{goods.minNum},#{goods.goodsModel},
+            #{goods.goodsProducer},#{goods.purchasingPrice},
+            #{goods.lastPurchasingPrice},#{goods.remarks},
+            #{goods.sellingPrice},#{goods.state},
+            #{goods.goodsUnit},#{goods.goodsTypeId}
+            )
+    </insert>
+    <update id="updateGoods">
+        UPDATE t_goods a
+        SET
+        a.goods_code= #{goods.goodsCode},
+        a.goods_name =#{goods.goodsName},
+        a.inventory_quantity= #{goods.inventoryQuantity},
+        a.min_num=#{goods.minNum},
+        a.goods_model=#{goods.goodsModel},
+        a.goods_producer=#{goods.goodsProducer},
+        a.purchasing_price=#{goods.purchasingPrice},
+        a.last_purchasing_price=#{goods.lastPurchasingPrice},
+        a.remarks=#{goods.remarks},
+        a.selling_price=#{goods.sellingPrice},
+        a.state=#{goods.state},
+        a.goods_unit=#{goods.goodsUnit},
+	    a.goods_type_id=#{goods.goodsTypeId}
+        WHERE a.goods_id=#{goods.goodsId}
+    </update>
 
     <resultMap id="DamageListGoodsMap" type="com.atguigu.jxc.entity.DamageListGoods">
         <id column="damage_list_goods_id" property="damageListGoodsId"/>
@@ -201,17 +246,14 @@
         FROM `t_goods_type` a
         WHERE a.p_id=#{pId}
     </select>
+
     <select id="queryUnitList" resultType="com.atguigu.jxc.entity.Unit">
         SELECT t1.unit_id unitId,t1.unit_name unitName
         FROM  t_unit t1
     </select>
 
 
-    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
-        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
-        FROM `t_goods_type` a
-        WHERE a.p_id=#{pId}
-    </select>
+
 
 
 </mapper>

@@ -2,12 +2,16 @@ package com.atguigu.jxc.service;
 
 import com.atguigu.jxc.domain.ServiceVO;
 
+
 import com.atguigu.jxc.entity.DamageListGoods;
 import org.apache.ibatis.annotations.Param;
 
 
 import com.atguigu.jxc.entity.Unit;
 
+
+import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.Unit;
 
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 
@@ -35,7 +39,15 @@ public interface GoodsService {
 
     List<GoodsTypeVo> queryAllGoodsType();
 
+
     List<Unit> queryUnitList();
 
+
+
+
+
+    List<Unit> queryUnitList();
+
+    void saveOrUpdateGoods(Goods goods, Integer goodsId);
 
 }

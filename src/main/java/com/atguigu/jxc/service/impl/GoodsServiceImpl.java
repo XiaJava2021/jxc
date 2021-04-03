@@ -14,12 +14,16 @@ import com.atguigu.jxc.entity.GoodsType;
 import com.atguigu.jxc.entity.Unit;
 
 
+
+import com.atguigu.jxc.entity.Unit;
+
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -128,15 +132,33 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
 
+    @Transactional
+    @Override
+    public void saveOrUpdateGoods(Goods goods, Integer goodsId) {
 
-        //方法1
-        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+        if (goods.getState() == null) {
+            goods.setState(0);
+        }
+        if (goods.getInventoryQuantity() == null) {
+            goods.setInventoryQuantity(0);
+        }
 
-        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+        if (goodsId != null) {
+            Integer i = goodsDao.updateGoods(goods);
 
-        return collect;
+            if (i == 0) {
+                throw new RuntimeException("添加失败");
+            }
+
+
+        } else {
+            Integer i = goodsDao.saveGoods(goods);
+            if (i == 0) {
+                throw new RuntimeException("修改失败");
+            }
+        }
+
     }
-
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
@@ -149,8 +171,6 @@ public class GoodsServiceImpl implements GoodsService {
                 default:
                     vo.setState("open");
             }
-
-
 
             vo.setIconCls("goods-type");
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();

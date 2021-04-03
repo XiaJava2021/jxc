@@ -11,6 +11,7 @@ import com.atguigu.jxc.entity.GoodsType;
 import com.atguigu.jxc.entity.Unit;
 
 
+import com.atguigu.jxc.entity.Unit;
 import org.apache.ibatis.annotations.Mapper;
 
 import org.apache.ibatis.annotations.Param;
@@ -46,4 +47,10 @@ public interface GoodsDao {
 
     List<Unit> queryUnitList();
 
+
+    List<Unit> queryUnitList();
+
+    Integer updateGoods(@Param("goods") Goods goods);
+
+    Integer saveGoods(@Param("goods") Goods goods);
 }

@@ -2,6 +2,7 @@ package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.entity.DamageListGoods;
+import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.Unit;
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
@@ -9,6 +10,7 @@ import com.atguigu.jxc.service.GoodsService;
 import com.google.gson.Gson;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,8 +20,8 @@ import java.util.Map;
 /**
  * @description 商品信息Controller
  */
-@RestController
-@CrossOrigin
+@Controller
+//@CrossOrigin
 public class GoodsController {
 
     @Autowired
@@ -53,6 +55,10 @@ public class GoodsController {
         unitMap.put("rows",list);
         return unitMap;
     }
+//    @PostMapping("unit/list")
+//    public Map<String,Object> unitList(){
+//        return goodsService.unitList();
+//    }
 
 
 
@@ -68,6 +74,9 @@ public class GoodsController {
     @PostMapping("goods/listInventory")
     public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
         return goodsService.listInventory(page, rows, codeOrName, goodsTypeId);
+    @ResponseBody
+    public Map<String,Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId){
+        return goodsService.listInventory(page,rows,codeOrName,goodsTypeId);
     }
 
     /**
@@ -78,6 +87,7 @@ public class GoodsController {
      * @param goodsTypeId 商品类别ID
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/list")
     public Map<String,Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId){
         return goodsService.list(page,rows,goodsName,goodsTypeId);
@@ -98,9 +108,25 @@ public class GoodsController {
 
     /**
      * 添加或修改商品信息
+     *
      * @param goods 商品信息实体
      * @return
      */
+    @ResponseBody
+    @PostMapping("goods/save")
+    public ServiceVO saveOrUpdateGoods( Goods goods, Integer goodsId) {
+        goodsService.saveOrUpdateGoods(goods, goodsId);
+        return new ServiceVO(SuccessCode.SUCCESS_CODE, SuccessCode.SUCCESS_MESS, null);
+    }
+//
+//    @ResponseBody
+//    @PostMapping("goods/save")
+//    public void saveOrUpdateGoods(Integer goodsId) {
+//
+//        System.out.println(goodsId);
+//
+//    }
+
 
     /**
      * 删除商品信息
