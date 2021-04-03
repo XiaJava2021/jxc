@@ -1,6 +1,7 @@
 package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
+import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.service.GoodsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +22,27 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
+
+    /**
+     * 查询商品所有分类
+     * @return
+     */
+    @PostMapping("goodsType/loadGoodsType")
+    public String goodsTypes(){
+        return goodsService.goodsTypes();
+    }
+
+    /**
+     * 查询所有商品单位
+     * @return
+     */
+    @PostMapping("unit/list")
+    public Map<String,Object> unitList(){
+        return goodsService.unitList();
+    }
+
+
 
     /**
      * 分页查询商品库存信息
@@ -42,6 +65,11 @@ public class GoodsController {
      * @param goodsTypeId 商品类别ID
      * @return
      */
+    @PostMapping("goods/list")
+    public Map<String,Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId){
+        return goodsService.list(page,rows,goodsName,goodsTypeId);
+    }
+
 
 
     /**

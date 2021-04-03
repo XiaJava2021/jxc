@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.Map;
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
-    @Autowired
+    @Resource
     private GoodsDao goodsDao;
 
     @Override
@@ -54,6 +55,33 @@ public class GoodsServiceImpl implements GoodsService {
         result.put("total",total);
         result.put("rows",goods);
         return result;
+    }
+
+    @Override
+    public Map<String, Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId) {
+        PageHelper.startPage(page,rows);
+        List<Goods> list = goodsDao.queryGoods(goodsName,goodsTypeId);
+        PageInfo<Goods> pageInfo = new PageInfo<>(list);
+        long total = pageInfo.getTotal();
+        List<Goods> goods = pageInfo.getList();
+        Map<String, Object> result = new HashMap<>();
+        result.put("total",total);
+        result.put("rows",goods);
+
+        return result;
+
+    }
+
+    @Override
+    public String goodsTypes() {
+
+        return this.goodsDao.queryGoodsTypes();
+    }
+
+    @Override
+    public Map<String, Object> unitList() {
+        Map<String, Object> map = goodsDao.queryUnitList();
+        return map;
     }
 
 
