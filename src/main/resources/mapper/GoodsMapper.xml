@@ -72,6 +72,9 @@
             goods_id
 
     </select>
+
+
+
     <select id="queryGoodsTypes" resultType="java.lang.String">
         SELECT t2.goods_type_name
         FROM t_goods_type
@@ -79,6 +82,13 @@
     <select id="queryUnitList" resultType="java.util.Map">
         SELECT t1.unit_id,t1.unit_name
         FROM  t_unit t1
+    </select>
+
+
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
     </select>
 
 
