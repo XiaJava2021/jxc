@@ -113,4 +113,11 @@
     </select>
 
 
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
+    </select>
+
+
 </mapper>

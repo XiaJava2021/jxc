@@ -5,7 +5,10 @@ import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.GoodsType;
+<<<<<<< HEAD
 import com.atguigu.jxc.entity.Unit;
+=======
+>>>>>>> upstream/dev
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
@@ -81,6 +84,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<GoodsTypeVo> queryAllGoodsType() {
+<<<<<<< HEAD
         //方法3.1
         List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
         List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
@@ -92,6 +96,18 @@ public class GoodsServiceImpl implements GoodsService {
         List<Unit> unitList = goodsDao.queryUnitList();
         return unitList;
     }
+=======
+
+
+        //方法1
+        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+
+        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+
+        return collect;
+    }
+
+>>>>>>> upstream/dev
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
@@ -104,6 +120,10 @@ public class GoodsServiceImpl implements GoodsService {
                 default:
                     vo.setState("open");
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/dev
             vo.setIconCls("goods-type");
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
             stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
@@ -120,7 +140,10 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> upstream/dev
 
 }
