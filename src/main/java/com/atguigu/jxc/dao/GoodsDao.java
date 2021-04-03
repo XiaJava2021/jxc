@@ -2,6 +2,7 @@ package com.atguigu.jxc.dao;
 
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.GoodsType;
+import com.atguigu.jxc.entity.Unit;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,7 +24,8 @@ public interface GoodsDao {
 
     String queryGoodsTypes();
 
-    Map<String, Object> queryUnitList();
 
     List<GoodsType> queryAllGoodsTypeByPid(Integer goodsTypeId);
+
+    List<Unit> queryUnitList();
 }

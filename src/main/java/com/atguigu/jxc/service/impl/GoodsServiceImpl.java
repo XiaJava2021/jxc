@@ -5,11 +5,11 @@ import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.GoodsType;
+import com.atguigu.jxc.entity.Unit;
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -62,17 +62,13 @@ public class GoodsServiceImpl implements GoodsService {
 
 
 
-    @Override
-    public Map<String, Object> unitList() {
-        Map<String, Object> map = goodsDao.queryUnitList();
-        return map;
-    }
+
 
     @Override
     public Map<String, Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId) {
         PageHelper.startPage(page,rows);
         List<Goods> list = goodsDao.queryGoods(goodsName,goodsTypeId);
-        PageInfo<Goods> pageInfo = new PageInfo<>(list);
+        PageInfo<Goods> pageInfo = new PageInfo<Goods>(list);
         long total = pageInfo.getTotal();
         List<Goods> goods = pageInfo.getList();
         Map<String, Object> result = new HashMap<>();
@@ -85,16 +81,17 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<GoodsTypeVo> queryAllGoodsType() {
-
-
         //方法3.1
         List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
-
         List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
-
         return collect;
     }
 
+    @Override
+    public List<Unit> queryUnitList() {
+        List<Unit> unitList = goodsDao.queryUnitList();
+        return unitList;
+    }
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
@@ -107,7 +104,6 @@ public class GoodsServiceImpl implements GoodsService {
                 default:
                     vo.setState("open");
             }
-
             vo.setIconCls("goods-type");
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
             stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
@@ -122,6 +118,8 @@ public class GoodsServiceImpl implements GoodsService {
             return vo;
         }).collect(Collectors.toList());
     }
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.Unit;
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
 import com.google.gson.Gson;
@@ -9,6 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,9 +44,13 @@ public class GoodsController {
      * @return
      */
     @PostMapping("unit/list")
-    public Map<String,Object> unitList(){
+    @ResponseBody
+    public Map<String,Object> queryUnitList(){
 
-        return goodsService.unitList();
+        List<Unit> list = goodsService.queryUnitList();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("rows",list);
+        return map;
     }
 
 
