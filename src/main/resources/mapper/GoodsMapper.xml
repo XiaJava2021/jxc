@@ -33,13 +33,13 @@
 
     <select id="queryStock" resultMap="queryStockMap">
         SELECT
-            t1.*,
-            t2.goods_type_name,
-            sum( t3.total ) sale_total
+        t1.*,
+        t2.goods_type_name,
+        sum( t3.total ) sale_total
         FROM
-            t_goods t1
-            JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
-            JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
+        t_goods t1
+        JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
+        JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
         <where>
             <if test="codeOrName != null">
                 (t1.goods_name LIKE CONCAT('%',#{codeOrName},'%')
@@ -50,8 +50,68 @@
             </if>
         </where>
         GROUP BY
-            goods_id
+        goods_id
     </select>
 
+    <delete id="deleteGoodsById">
+         DELETE FROM
+         t_goods WHERE
+         goods_id = #{goodsId}
+         AND
+         state
+         NOT IN
+         (1,2)
+    </delete>
 
+<!--    <select id="getNoInventoryQuantityByPage" resultMap="queryStockMap">-->
+<!--        SELECT t1.*,t2.goods_type_name-->
+<!--        FROM t_goods t1-->
+<!--        LEFT JOIN-->
+<!--        t_goods_type t2-->
+<!--        on t1.goods_type_id = t2.goods_type_id-->
+<!--        <where>-->
+<!--            <if test="nameOrCode != null">-->
+<!--                t1.inventory_quantity =0-->
+<!--                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')-->
+<!--            </if>-->
+<!--            <if test="nameOrCode == null">-->
+<!--                t1.inventory_quantity =0-->
+<!--            </if>-->
+<!--        </where>-->
+<!--      LIMIT #{page},#{rows}-->
+<!--    </select>-->
+
+    <select id="getNoInventoryQuantityByPage" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity =0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity =0
+            </if>
+        </where>
+    </select>
+
+    <select id="getHasInventoryQuantity" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity >0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity >0
+            </if>
+        </where>
+    </select>
 </mapper>
