@@ -1,6 +1,7 @@
 package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
+import com.atguigu.jxc.entity.DamageListGoods;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.Unit;
@@ -63,13 +64,16 @@ public class GoodsController {
 
     /**
      * 分页查询商品库存信息
-     * @param page 当前页
-     * @param rows 每页显示条数
-     * @param codeOrName 商品编码或名称
+     *
+     * @param page        当前页
+     * @param rows        每页显示条数
+     * @param codeOrName  商品编码或名称
      * @param goodsTypeId 商品类别ID
      * @return
      */
     @PostMapping("goods/listInventory")
+    public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
+        return goodsService.listInventory(page, rows, codeOrName, goodsTypeId);
     @ResponseBody
     public Map<String,Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId){
         return goodsService.listInventory(page,rows,codeOrName,goodsTypeId);
@@ -93,6 +97,7 @@ public class GoodsController {
 
     /**
      * 生成商品编码
+     *
      * @return
      */
     @RequestMapping("/getCode")
@@ -165,5 +170,34 @@ public class GoodsController {
      * 查询库存报警商品信息
      * @return
      */
+
+
+    /**
+     * 查询报损单商品信息
+     *
+     * @param damageListId 报损单Id
+     * @return
+     */
+    @PostMapping("damageListGoods/goodsList")
+    public Map<String, Object> queryDamageListGoods(Integer damageListId) {
+        return goodsService.queryDamageListGoods(damageListId);
+    }
+
+    /**
+     * 报溢单查询
+     *
+     * @param sTime 开始时间
+     * @param eTime 结束时间
+     * @return
+     */
+    @PostMapping("overflowListGoods/list")
+    public Map<String, Object> queryOverflowList(String sTime, String eTime) {
+        return this.goodsService.queryOverflowList(sTime, eTime);
+    }
+
+    @PostMapping("overflowListGoods/goodsList")
+    public Map<String, Object> queryOverflowListGoods(Integer overflowListId) {
+        return this.goodsService.queryOverflowListGoods(overflowListId);
+    }
 
 }
