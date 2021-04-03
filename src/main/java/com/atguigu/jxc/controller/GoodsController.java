@@ -2,13 +2,12 @@ package com.atguigu.jxc.controller;
 
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
+import com.google.gson.Gson;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -28,9 +27,14 @@ public class GoodsController {
      * 查询商品所有分类
      * @return
      */
+    @ResponseBody
     @PostMapping("goodsType/loadGoodsType")
-    public String goodsTypes(){
-        return goodsService.goodsTypes();
+    public String queryAllGoodsType(){
+        List<GoodsTypeVo> list = goodsService.queryAllGoodsType();
+
+        Gson gson = new Gson();
+        String s = gson.toJson(list);
+        return s;
     }
 
     /**

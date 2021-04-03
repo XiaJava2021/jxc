@@ -4,6 +4,8 @@ import com.atguigu.jxc.dao.GoodsDao;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.GoodsType;
+import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @description
@@ -57,11 +60,7 @@ public class GoodsServiceImpl implements GoodsService {
         return result;
     }
 
-    @Override
-    public String goodsTypes() {
 
-        return this.goodsDao.queryGoodsTypes();
-    }
 
     @Override
     public Map<String, Object> unitList() {
@@ -83,6 +82,47 @@ public class GoodsServiceImpl implements GoodsService {
         return result;
 
     }
+
+    @Override
+    public List<GoodsTypeVo> queryAllGoodsType() {
+
+
+        //方法1
+        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+
+        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+
+        return collect;
+    }
+
+
+    private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
+        return goodsTypes.stream().map(goodsType -> {
+            GoodsTypeVo vo = new GoodsTypeVo();
+            vo.setId(goodsType.getGoodsTypeId());
+            vo.setText(goodsType.getGoodsTypeName());
+            switch (goodsType.getGoodsTypeState()) {
+                case 1:
+                    vo.setState("closed");
+                default:
+                    vo.setState("open");
+            }
+
+            vo.setIconCls("goods-type");
+            HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+            stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
+            vo.setAttributes(stringIntegerHashMap);
+
+            if (goodsType.getGoodsTypeId() != null) {
+                List<GoodsType> goodsTypes1 = goodsDao.queryAllGoodsTypeByPid(goodsType.getGoodsTypeId());
+
+                List<GoodsTypeVo> goodsTypeVos = this.getGoodsTypeVos(goodsTypes1);
+                vo.setChildren(goodsTypeVos);
+            }
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
 
 
 }
