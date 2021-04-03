@@ -58,6 +58,18 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public String goodsTypes() {
+
+        return this.goodsDao.queryGoodsTypes();
+    }
+
+    @Override
+    public Map<String, Object> unitList() {
+        Map<String, Object> map = goodsDao.queryUnitList();
+        return map;
+    }
+
+    @Override
     public Map<String, Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId) {
         PageHelper.startPage(page,rows);
         List<Goods> list = goodsDao.queryGoods(goodsName,goodsTypeId);
@@ -70,18 +82,6 @@ public class GoodsServiceImpl implements GoodsService {
 
         return result;
 
-    }
-
-    @Override
-    public String goodsTypes() {
-
-        return this.goodsDao.queryGoodsTypes();
-    }
-
-    @Override
-    public Map<String, Object> unitList() {
-        Map<String, Object> map = goodsDao.queryUnitList();
-        return map;
     }
 
 
