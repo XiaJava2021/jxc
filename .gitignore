@@ -3,3 +3,4 @@
 /src/test/
 .gitignore
 target/
+/src/main/resources/application.properties

@@ -18,4 +18,7 @@ public interface GoodsService {
 
     Map<String, Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId);
 
+    Integer saveStock(Integer goodsId, Integer inventoryQuantity, Double purchasingPrice);
+
+    Integer deleteStock(Integer goodsId);
 }

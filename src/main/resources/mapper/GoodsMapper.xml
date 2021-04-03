@@ -81,5 +81,25 @@
         FROM  t_unit t1
     </select>
 
+    <select id="queryGoodsById" parameterType="java.lang.Integer" resultType="com.atguigu.jxc.entity.Goods">
+        SELECT
+            goods_id,
+            goods_code,
+            goods_name,
+            inventory_quantity,
+            min_num,
+            goods_model,
+            goods_producer,
+            purchasing_price,
+            last_purchasing_price,
+            remarks,
+            selling_price,
+            state,
+            goods_unit,
+            goods_type_id
+        FROM t_goods
+        WHERE goods_id = #{goodsId}
+    </select>
+
 
 </mapper>

@@ -24,4 +24,6 @@ public interface GoodsDao {
 
     Map<String, Object> queryUnitList();
 
+    Goods queryGoodsById(Integer goodsId);
+
 }

@@ -84,5 +84,32 @@ public class GoodsServiceImpl implements GoodsService {
 
     }
 
+    @Override
+    public Integer saveStock(Integer goodsId, Integer inventoryQuantity, Double purchasingPrice) {
+        Goods goods = new Goods();
+        goods.setGoodsId(goodsId);
+        goods.setInventoryQuantity(inventoryQuantity);
+        goods.setPurchasingPrice(purchasingPrice);
+        Integer count = 0;
+        // TODO:更新库存
+//        count = this.goodsDao.updateGoods(goods);
+        return count;
+    }
+
+    @Override
+    public Integer deleteStock(Integer goodsId) {
+        Goods goods = this.goodsDao.queryGoodsById(goodsId);
+        if(goods == null){
+            return -1;
+        }
+        if(goods.getState() != 0){
+            return goods.getState();
+        }
+        goods.setInventoryQuantity(-1);
+        // TODO:更新库存
+//        this.goodsDao.updateGoods(goods);
+        return 0;
+    }
+
 
 }

@@ -38,6 +38,9 @@ public interface ErrorCode {
     int HAS_FORM_ERROR_CODE = 402;
     String HAS_FORM_ERROR_MESS = "该商品有进货或销售单据，不能删除";
 
+    int NO_EXIST_GOODS_CODE = 403;
+    String NO_EXIST_GOODS_MESS = "商品不存在，请核对后操作";
+
     int REQ_METHOD_ERR_CODE = 500;
     String REQ_METHOD_ERR_MESS = "请求方式有误,请检查 GET/POST";
 

@@ -1,6 +1,8 @@
 package com.atguigu.jxc.controller;
 
+import com.atguigu.jxc.domain.ErrorCode;
 import com.atguigu.jxc.domain.ServiceVO;
+import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.service.GoodsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -119,12 +121,39 @@ public class GoodsController {
      * @param purchasingPrice 成本价
      * @return
      */
+    @PostMapping("goods/saveStock")
+    public ServiceVO saveStock(Integer goodsId,Integer inventoryQuantity, Double purchasingPrice){
+        if(goodsId == null || inventoryQuantity == null || purchasingPrice == null){
+            return new ServiceVO(ErrorCode.NULL_POINTER_CODE,ErrorCode.NULL_POINTER_MESS);
+        }
+        if(inventoryQuantity < -1 || purchasingPrice < 0){
+            return new ServiceVO(ErrorCode.PARA_TYPE_ERROR_CODE,ErrorCode.PARA_TYPE_ERROR_MESS);
+        }
+        Integer count = this.goodsService.saveStock(goodsId,inventoryQuantity,purchasingPrice);
+        if(count == 1){
+            return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
+        }
+        return new ServiceVO(ErrorCode.NO_EXIST_GOODS_CODE,ErrorCode.NO_EXIST_GOODS_MESS);
+    }
 
     /**
      * 删除商品库存
      * @param goodsId 商品ID
      * @return
      */
+    @PostMapping("goods/deleteStock")
+    public ServiceVO deleteStock(Integer goodsId){
+        if(goodsId == null){
+            return new ServiceVO(ErrorCode.NULL_POINTER_CODE,ErrorCode.NULL_POINTER_MESS);
+        }
+        Integer state = this.goodsService.deleteStock(goodsId);
+        switch (state){
+            case 0: return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
+            case 1: return new ServiceVO(ErrorCode.STORED_ERROR_CODE,ErrorCode.STORED_ERROR_MESS);
+            case 2: return new ServiceVO(ErrorCode.HAS_FORM_ERROR_CODE,ErrorCode.HAS_FORM_ERROR_MESS);
+            default: return new ServiceVO(ErrorCode.NO_EXIST_GOODS_CODE,ErrorCode.NO_EXIST_GOODS_MESS);
+        }
+    }
 
     /**
      * 查询库存报警商品信息
