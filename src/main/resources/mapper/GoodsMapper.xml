@@ -274,6 +274,57 @@
         FROM  t_unit t1
     </select>
 
+
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
+    </select>
+
+    <delete id="deleteGoodsById">
+         DELETE FROM
+         t_goods WHERE
+         goods_id = #{goodsId}
+         AND
+         state
+         NOT IN
+         (1,2)
+    </delete>
+
+    <select id="getNoInventoryQuantityByPage" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity =0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity =0
+            </if>
+        </where>
+    </select>
+
+    <select id="getHasInventoryQuantity" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity >0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity >0
+            </if>
+        </where>
+    </select>
+
     <select id="queryDamageListGoodsByTime" resultMap="queryDamageListGoodsMap">
     SELECT
         t1.damage_date,

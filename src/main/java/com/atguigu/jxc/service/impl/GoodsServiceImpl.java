@@ -65,6 +65,41 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+
+    public ServiceVO deleteGoodsById(Integer goodsId) {
+
+        Integer rows = goodsDao.deleteGoodsById(goodsId);
+        if (rows==1){
+            return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
+        }else{
+            return new ServiceVO(-1,"商品有入库、有进货和销售单据");
+        }
+    }
+
+    @Override
+    public Map<String, Object> getNoInventoryQuantity(Integer page, Integer rows, String nameOrCode) {
+        Map<String, Object> pageMap=new HashMap<>();
+
+        PageHelper.startPage(page,rows);
+        List<Goods>goods=goodsDao.getNoInventoryQuantityByPage((page-1)*rows,rows,nameOrCode);
+        PageInfo pageInfo=new PageInfo(goods);
+        pageMap.put("total",pageInfo.getTotal());
+        pageMap.put("rows",pageInfo.getList());
+        return pageMap;
+    }
+
+    @Override
+    public Map<String, Object> getHasInventoryQuantity(Integer page, Integer rows, String nameOrCode) {
+        Map<String, Object> pageMap=new HashMap<>();
+
+        PageHelper.startPage(page,rows);
+        List<Goods>goods=goodsDao.getHasInventoryQuantity((page-1)*rows,rows,nameOrCode);
+        PageInfo pageInfo=new PageInfo(goods);
+        pageMap.put("total",pageInfo.getTotal());
+        pageMap.put("rows",pageInfo.getList());
+        return pageMap;
+    }
+
     public Map<String, Object> queryDamageListGoods(Integer damageListId) {
         HashMap<String, Object> map = new HashMap<>();
         List<DamageListGoods> damageListGoodsList = this.goodsDao.queryDamageListGoods(damageListId);
@@ -88,6 +123,7 @@ public class GoodsServiceImpl implements GoodsService {
         map.put("rows", overflowListGoods);
         return map;
     }
+
 
 
 
