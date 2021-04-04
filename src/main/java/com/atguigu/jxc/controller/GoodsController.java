@@ -129,27 +129,47 @@ public class GoodsController {
 
     /**
      * 删除商品信息
+     *  @Auth 吴健
+     *  @Date 4.3
      * @param goodsId 商品ID
      * @return
      */
+    @PostMapping("goods/delete")
+    public ServiceVO deleteGoodsById(Integer goodsId){
+        ServiceVO serviceVO = goodsService.deleteGoodsById(goodsId);
+        return serviceVO;
+    }
 
     /**
      * 分页查询无库存商品信息
+     * @Auth 吴健
+     * @Date 4.3
      * @param page 当前页
      * @param rows 每页显示条数
      * @param nameOrCode 商品名称或商品编码
      * @return
      */
+    @PostMapping("goods/getNoInventoryQuantity")
+    public Map<String,Object> getNoInventoryQuantity(Integer page,Integer rows,String nameOrCode){
+        Map<String,Object> noInventoryGoods=goodsService.getNoInventoryQuantity(page,rows,nameOrCode);
+        return noInventoryGoods;
+    }
 
 
     /**
      * 分页查询有库存商品信息
+     * @Auth 吴健
+     * @Date 4.3
      * @param page 当前页
      * @param rows 每页显示条数
      * @param nameOrCode 商品名称或商品编码
      * @return
      */
-
+    @PostMapping("goods/getHasInventoryQuantity")
+    public Map<String,Object> getHasInventoryQuantity(Integer page,Integer rows,String nameOrCode){
+        Map<String,Object> noInventoryGoods=goodsService.getHasInventoryQuantity(page,rows,nameOrCode);
+        return noInventoryGoods;
+    }
 
     /**
      * 添加商品期初库存

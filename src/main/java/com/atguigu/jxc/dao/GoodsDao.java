@@ -22,6 +22,12 @@ public interface GoodsDao {
 
     List<Goods> queryStock(@Param("codeOrName") String codeOrName, @Param("goodsTypeId") Integer goodsTypeId);
 
+    Integer deleteGoodsById(Integer goodsId);
+
+    List<Goods> getNoInventoryQuantityByPage(@Param("page") Integer page, @Param("rows") Integer rows, @Param("nameOrCode") String nameOrCode);
+
+    List<Goods> getHasInventoryQuantity(@Param("page") Integer page, @Param("rows") Integer rows, @Param("nameOrCode") String nameOrCode);
+
 
     List<DamageListGoods> queryDamageListGoods(Integer damageListId);
 
@@ -35,7 +41,6 @@ public interface GoodsDao {
 
 
     List<GoodsType> queryAllGoodsTypeByPid(Integer goodsTypeId);
-
 
     List<Unit> queryUnitList();
 
