@@ -31,6 +31,47 @@
             #{goods.goodsUnit},#{goods.goodsTypeId}
             )
     </insert>
+
+    <insert id="saveOverflowList" useGeneratedKeys="true" keyProperty="overflowListId">
+        INSERT INTO t_overflow_list ( overflow_number, overflow_date, remarks, user_id )
+        VALUES
+            (
+                #{overflowNumber},
+                #{overflowDate},
+                #{remarks},
+                #{userId}
+            )
+    </insert>
+
+    <insert id="saveOverflowListGoods">
+        INSERT INTO t_overflow_list_goods
+            (
+                goods_id,
+                goods_code,
+                goods_name,
+                goods_model,
+                goods_num,
+                goods_unit,
+                price,
+                total,
+                overflow_list_id,
+                goods_type_id
+            )
+        VALUES
+            (
+                #{goodsId},
+                #{goodsCode},
+                #{goodsName},
+                #{goodsModel},
+                #{goodsNum},
+                #{goodsUnit},
+                #{price},
+                #{total},
+                #{overflowListId},
+                #{goodsTypeId}
+            )
+    </insert>
+
     <update id="updateGoods">
         UPDATE t_goods a
         SET
@@ -49,6 +90,44 @@
 	    a.goods_type_id=#{goods.goodsTypeId}
         WHERE a.goods_id=#{goods.goodsId}
     </update>
+
+    <resultMap id="DamageListGoodsMap" type="com.atguigu.jxc.entity.DamageListGoods">
+        <id column="damage_list_goods_id" property="damageListGoodsId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="price" property="price"/>
+        <result column="total" property="total"/>
+        <result column="damage_list_id" property="damageListId"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+    </resultMap>
+
+    <resultMap id="OverflowListMap" type="com.atguigu.jxc.entity.OverflowList">
+        <id column="overflow_list_id" property="overflowListId"/>
+        <result column="overflow_number" property="overflowNumber"/>
+        <result column="overflow_date" property="overflowDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="user_id" property="userId"/>
+        <result column="true_name" property="trueName"/>
+    </resultMap>
+
+    <resultMap id="OverflowListGoodsMap" type="com.atguigu.jxc.entity.OverflowListGoods">
+        <id column="overflow_list_goods_id" property="overflowListGoodsId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_num" property="goodsNum"/>
+        <result column="price" property="price"/>
+        <result column="total" property="total"/>
+        <result column="overflow_list_id" property="overflowListId"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+    </resultMap>
+
 
     <select id="getMaxCode" resultType="java.lang.String">
         SELECT
@@ -76,6 +155,15 @@
         <result column="sale_total" property="saleTotal"/>
     </resultMap>
 
+    <resultMap id="queryDamageListGoodsMap" type="com.atguigu.jxc.entity.DamageList">
+        <result column="damage_list_id" property="damageListId"/>
+        <result column="damage_number" property="damageNumber"/>
+        <result column="damage_date" property="damageDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="user_id" property="userId"/>
+        <result column="true_name" property="trueName"/>
+    </resultMap>
+
     <resultMap id="queryGoodsMap" type="com.atguigu.jxc.entity.Goods">
         <id column="goods_id" property="goodsId"/>
         <result column="goods_code" property="goodsCode"/>
@@ -97,13 +185,26 @@
 
     <select id="queryStock" resultMap="queryStockMap">
         SELECT
-            t1.*,
-            t2.goods_type_name,
-            sum( t3.total ) sale_total
+        t1.goods_id,
+        t1.goods_code,
+        t1.goods_name,
+        t1.inventory_quantity,
+        t1.min_num,
+        t1.goods_model,
+        t1.goods_producer,
+        t1.purchasing_price,
+        t1.last_purchasing_price,
+        t1.remarks,
+        t1.selling_price,
+        t1.state,
+        t1.goods_unit,
+        t1.goods_type_id,
+        t2.goods_type_name,
+        sum( t3.total ) sale_total
         FROM
-            t_goods t1
-            JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
-            JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
+        t_goods t1
+        JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
+        JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
         <where>
             <if test="codeOrName != null">
                 (t1.goods_name LIKE CONCAT('%',#{codeOrName},'%')
@@ -114,8 +215,64 @@
             </if>
         </where>
         GROUP BY
-            goods_id
+        goods_id
     </select>
+    <select id="queryDamageListGoods" resultMap="DamageListGoodsMap">
+        SELECT
+            damage_list_goods_id,
+            goods_id,
+            goods_code,
+            goods_name,
+            goods_model,
+            goods_unit,
+            goods_num,
+            price,
+            total,
+            damage_list_id,
+            goods_type_id
+        FROM
+	        `t_damage_list_goods`
+        WHERE
+           damage_list_id =#{damageListId}
+    </select>
+    <select id="queryOverflowList" resultMap="OverflowListMap">
+        SELECT
+            t1.overflow_list_id,
+            t1.overflow_number,
+            t1.overflow_date,
+            t1.remarks,
+            t1.user_id,
+            t2.true_name
+        FROM
+	        t_overflow_list t1
+        JOIN
+	        t_user t2
+        ON
+	        t1.user_id = t2.user_id
+	    WHERE
+	        t1.overflow_date
+        BETWEEN
+	        #{sTime} AND #{eTime}
+    </select>
+    <select id="queryOverflowListGoods" resultMap="OverflowListGoodsMap">
+        SELECT
+            overflow_list_goods_id,
+            goods_id,
+            goods_code,
+            goods_name,
+            goods_model,
+            goods_unit,
+            goods_num,
+            price,
+            total,
+            overflow_list_id,
+            goods_type_id
+        FROM
+            `t_overflow_list_goods`
+        WHERE
+            overflow_list_id=#{overflowListId}
+    </select>
+
     <select id="queryGoods" resultMap="queryGoodsMap">
         SELECT
             t1.*,
@@ -178,8 +335,91 @@
         WHERE goods_id = #{goodsId}
     </select>
 
+    <delete id="deleteGoodsById">
+         DELETE FROM
+         t_goods WHERE
+         goods_id = #{goodsId}
+         AND
+         state
+         NOT IN
+         (1,2)
+    </delete>
 
+    <select id="getNoInventoryQuantityByPage" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity =0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity =0
+            </if>
+        </where>
+    </select>
 
+    <select id="getHasInventoryQuantity" resultMap="queryStockMap">
+        SELECT t1.*,t2.goods_type_name
+        FROM t_goods t1
+        LEFT JOIN
+        t_goods_type t2
+        on t1.goods_type_id = t2.goods_type_id
+        <where>
+            <if test="nameOrCode != null">
+                t1.inventory_quantity >0
+                AND t1.goods_code = #{nameOrCode}+0 or t1.goods_name like CONCAT('%',#{nameOrCode},'%')
+            </if>
+            <if test="nameOrCode == null">
+                t1.inventory_quantity >0
+            </if>
+        </where>
+    </select>
 
+    <select id="queryDamageListGoodsByTime" resultMap="queryDamageListGoodsMap">
+    SELECT
+        t1.damage_date,
+        t1.damage_list_id,
+        t1.damage_number,
+        t1.remarks,
+        t1.user_id,
+        t2.true_name
+    FROM
+        t_damage_list t1
+        JOIN t_user t2 ON t1.user_id = t2.user_id
+    WHERE
+        t1.damage_date &gt;= #{sTime}
+        AND t1.damage_date &lt;= #{eTime}
+</select>
 
+    <select id="queryListAlarm" resultMap="queryStockMap">
+        SELECT
+        t1.goods_id,
+        t1.goods_code,
+        t1.goods_name,
+        t1.inventory_quantity,
+        t1.min_num,
+        t1.goods_model,
+        t1.goods_producer,
+        t1.purchasing_price,
+        t1.last_purchasing_price,
+        t1.remarks,
+        t1.selling_price,
+        t1.state,
+        t1.goods_unit,
+        t1.goods_type_id,
+        t2.goods_type_name,
+        sum( t3.total ) sale_total
+        FROM
+        t_goods t1
+        JOIN t_goods_type t2 ON t1.goods_type_id = t2.goods_type_id
+        JOIN t_sale_list_goods t3 ON t1.goods_id = t3.goods_id
+        where
+        t1.inventory_quantity &lt; t1.min_num
+        GROUP BY
+        goods_id
+    </select>
 </mapper>
