@@ -4,6 +4,51 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atguigu.jxc.dao.GoodsDao">
+    <insert id="saveGoods">
+        INSERT INTO t_goods  (
+            goods_code,
+            goods_name,
+            inventory_quantity,
+            min_num,
+            goods_model,
+            goods_producer,
+            purchasing_price,
+            last_purchasing_price,
+            remarks,
+            selling_price,
+            state,
+            goods_unit,
+            goods_type_id
+            )
+        VALUES
+            (
+            #{goods.goodsCode},
+            #{goods.goodsName},#{goods.inventoryQuantity},
+            #{goods.minNum},#{goods.goodsModel},
+            #{goods.goodsProducer},#{goods.purchasingPrice},
+            #{goods.lastPurchasingPrice},#{goods.remarks},
+            #{goods.sellingPrice},#{goods.state},
+            #{goods.goodsUnit},#{goods.goodsTypeId}
+            )
+    </insert>
+    <update id="updateGoods">
+        UPDATE t_goods a
+        SET
+        a.goods_code= #{goods.goodsCode},
+        a.goods_name =#{goods.goodsName},
+        a.inventory_quantity= #{goods.inventoryQuantity},
+        a.min_num=#{goods.minNum},
+        a.goods_model=#{goods.goodsModel},
+        a.goods_producer=#{goods.goodsProducer},
+        a.purchasing_price=#{goods.purchasingPrice},
+        a.last_purchasing_price=#{goods.lastPurchasingPrice},
+        a.remarks=#{goods.remarks},
+        a.selling_price=#{goods.sellingPrice},
+        a.state=#{goods.state},
+        a.goods_unit=#{goods.goodsUnit},
+	    a.goods_type_id=#{goods.goodsTypeId}
+        WHERE a.goods_id=#{goods.goodsId}
+    </update>
 
     <select id="getMaxCode" resultType="java.lang.String">
         SELECT
@@ -13,6 +58,25 @@
     </select>
 
     <resultMap id="queryStockMap" type="com.atguigu.jxc.entity.Goods">
+        <id column="goods_id" property="goodsId"/>
+        <result column="goods_code" property="goodsCode"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="inventory_quantity" property="inventoryQuantity"/>
+        <result column="last_purchasing_price" property="lastPurchasingPrice"/>
+        <result column="min_num" property="minNum"/>
+        <result column="goods_model" property="goodsModel"/>
+        <result column="goods_producer" property="goodsProducer"/>
+        <result column="purchasing_price" property="purchasingPrice"/>
+        <result column="remarks" property="remarks"/>
+        <result column="selling_price" property="sellingPrice"/>
+        <result column="state" property="state"/>
+        <result column="goods_unit" property="goodsUnit"/>
+        <result column="goods_type_id" property="goodsTypeId"/>
+        <result column="goods_type_name" property="goodsTypeName"/>
+        <result column="sale_total" property="saleTotal"/>
+    </resultMap>
+
+    <resultMap id="queryGoodsMap" type="com.atguigu.jxc.entity.Goods">
         <id column="goods_id" property="goodsId"/>
         <result column="goods_code" property="goodsCode"/>
         <result column="goods_name" property="goodsName"/>
@@ -52,7 +116,7 @@
         GROUP BY
             goods_id
     </select>
-    <select id="queryGoods" resultType="com.atguigu.jxc.entity.Goods">
+    <select id="queryGoods" resultMap="queryGoodsMap">
         SELECT
             t1.*,
             t2.goods_type_name
@@ -72,16 +136,29 @@
             goods_id
 
     </select>
+
+
+
     <select id="queryGoodsTypes" resultType="java.lang.String">
         SELECT t2.goods_type_name
         FROM t_goods_type
     </select>
-    <select id="queryUnitList" resultType="java.util.Map">
-        SELECT t1.unit_id,t1.unit_name
+
+
+
+
+    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
+        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
+        FROM `t_goods_type` a
+        WHERE a.p_id=#{pId}
+    </select>
+
+    <select id="queryUnitList" resultType="com.atguigu.jxc.entity.Unit">
+        SELECT t1.unit_id unitId,t1.unit_name unitName
         FROM  t_unit t1
     </select>
 
-    <select id="queryGoodsById" parameterType="java.lang.Integer" resultType="com.atguigu.jxc.entity.Goods">
+    <select id="queryGoodsById" parameterType="java.lang.Integer" resultMap="queryGoodsMap">
         SELECT
             goods_id,
             goods_code,
@@ -100,6 +177,9 @@
         FROM t_goods
         WHERE goods_id = #{goodsId}
     </select>
+
+
+
 
 
 </mapper>

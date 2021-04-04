@@ -4,22 +4,24 @@ import com.atguigu.jxc.domain.ErrorCode;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.Unit;
+import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
+import com.google.gson.Gson;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @description 商品信息Controller
  */
-@RestController
-@CrossOrigin
+@Controller
+//@CrossOrigin
 public class GoodsController {
 
     @Autowired
@@ -30,9 +32,14 @@ public class GoodsController {
      * 查询商品所有分类
      * @return
      */
+    @ResponseBody
     @PostMapping("goodsType/loadGoodsType")
-    public String goodsTypes(){
-        return goodsService.goodsTypes();
+    public String queryAllGoodsType(){
+        List<GoodsTypeVo> list = goodsService.queryAllGoodsType();
+
+        Gson gson = new Gson();
+        String goodsTypes = gson.toJson(list);
+        return goodsTypes;
     }
 
     /**
@@ -40,9 +47,18 @@ public class GoodsController {
      * @return
      */
     @PostMapping("unit/list")
-    public Map<String,Object> unitList(){
-        return goodsService.unitList();
+    @ResponseBody
+    public Map<String,Object> queryUnitList(){
+
+        List<Unit> list = goodsService.queryUnitList();
+        HashMap<String, Object> unitMap = new HashMap<>();
+        unitMap.put("rows",list);
+        return unitMap;
     }
+//    @PostMapping("unit/list")
+//    public Map<String,Object> unitList(){
+//        return goodsService.unitList();
+//    }
 
 
 
@@ -55,6 +71,7 @@ public class GoodsController {
      * @return
      */
     @PostMapping("goods/listInventory")
+    @ResponseBody
     public Map<String,Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId){
         return goodsService.listInventory(page,rows,codeOrName,goodsTypeId);
     }
@@ -67,6 +84,7 @@ public class GoodsController {
      * @param goodsTypeId 商品类别ID
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/list")
     public Map<String,Object> list(Integer page, Integer rows, String goodsName, Integer goodsTypeId){
         return goodsService.list(page,rows,goodsName,goodsTypeId);
@@ -86,9 +104,25 @@ public class GoodsController {
 
     /**
      * 添加或修改商品信息
+     *
      * @param goods 商品信息实体
      * @return
      */
+    @ResponseBody
+    @PostMapping("goods/save")
+    public ServiceVO saveOrUpdateGoods( Goods goods, Integer goodsId) {
+        goodsService.saveOrUpdateGoods(goods, goodsId);
+        return new ServiceVO(SuccessCode.SUCCESS_CODE, SuccessCode.SUCCESS_MESS, null);
+    }
+//
+//    @ResponseBody
+//    @PostMapping("goods/save")
+//    public void saveOrUpdateGoods(Integer goodsId) {
+//
+//        System.out.println(goodsId);
+//
+//    }
+
 
     /**
      * 删除商品信息
@@ -122,14 +156,19 @@ public class GoodsController {
      * @return
      */
     @PostMapping("goods/saveStock")
-    public ServiceVO saveStock(Integer goodsId,Integer inventoryQuantity, Double purchasingPrice){
+    public ServiceVO saveStock(@RequestParam("goodsId") Integer goodsId,Integer inventoryQuantity, Double purchasingPrice){
         if(goodsId == null || inventoryQuantity == null || purchasingPrice == null){
             return new ServiceVO(ErrorCode.NULL_POINTER_CODE,ErrorCode.NULL_POINTER_MESS);
         }
         if(inventoryQuantity < -1 || purchasingPrice < 0){
             return new ServiceVO(ErrorCode.PARA_TYPE_ERROR_CODE,ErrorCode.PARA_TYPE_ERROR_MESS);
         }
-        Integer count = this.goodsService.saveStock(goodsId,inventoryQuantity,purchasingPrice);
+        Integer count = 0;
+        try {
+            count = this.goodsService.saveStock(goodsId,inventoryQuantity,purchasingPrice);
+        } catch (Exception e) {
+            // 修改库存出错
+        }
         if(count == 1){
             return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
         }
@@ -146,7 +185,12 @@ public class GoodsController {
         if(goodsId == null){
             return new ServiceVO(ErrorCode.NULL_POINTER_CODE,ErrorCode.NULL_POINTER_MESS);
         }
-        Integer state = this.goodsService.deleteStock(goodsId);
+        Integer state = -1;
+        try {
+            state = this.goodsService.deleteStock(goodsId);
+        } catch (Exception e) {
+            // 删除库存出错
+        }
         switch (state){
             case 0: return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
             case 1: return new ServiceVO(ErrorCode.STORED_ERROR_CODE,ErrorCode.STORED_ERROR_MESS);

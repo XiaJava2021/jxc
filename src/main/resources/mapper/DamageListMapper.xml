@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.jxc.dao.DamageListDao">
+    <insert id="save" useGeneratedKeys="true" keyProperty="damageListId"  parameterType="com.atguigu.jxc.entity.DamageList">
+        insert into
+        t_damage_list(damage_number,damage_date,remarks,user_id)
+        values (#{damageNumber},#{damageDate},#{remarks},#{userId})
+    </insert>
+</mapper>
