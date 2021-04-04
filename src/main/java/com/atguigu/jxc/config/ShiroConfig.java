@@ -53,7 +53,7 @@ public class ShiroConfig {
 
         // <!-- 过滤链定义，从上向下顺序执行，一般将 /**放在最为下边
         // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-        filterChainDefinitionMap.put("/**", "authc");
+//        filterChainDefinitionMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;

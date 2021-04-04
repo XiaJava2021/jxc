@@ -28,12 +28,20 @@
         <result column="goods_unit" property="goodsUnit" jdbcType="VARCHAR" />
         <result column="goods_type_id" property="goodsTypeId" jdbcType="VARCHAR" />
     </resultMap>
+    <insert id="saveType">
+	    INSERT INTO t_goods_type (goods_type_name,p_id,goods_type_state) VALUES (#{goodsType.goodsTypeName} ,#{goodsType.pId},0)
+    </insert>
+
 
     <update id="updateGoodsTypeState" parameterType="com.atguigu.jxc.entity.GoodsType">
         UPDATE t_goods_type
         SET goods_type_state = #{goodsTypeState}
         WHERE goods_type_id = #{goodsTypeId}
     </update>
+    <delete id="delete">
+	    DELETE from t_goods_type where goods_type_id =#{goodsTypeId}
+    </delete>
+
 
 
 </mapper>

@@ -3,17 +3,18 @@ package com.atguigu.jxc.service.impl;
 import com.atguigu.jxc.dao.GoodsDao;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
-import com.atguigu.jxc.entity.Goods;
-import com.atguigu.jxc.entity.GoodsType;
-<<<<<<< HEAD
+import com.atguigu.jxc.entity.*;
+
+
 import com.atguigu.jxc.entity.Unit;
-=======
->>>>>>> upstream/dev
+
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
+
 import com.atguigu.jxc.service.GoodsService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -42,9 +43,9 @@ public class GoodsServiceImpl implements GoodsService {
         // 将编码重新格式化为4位数字符串形式
         String unitCode = intCode.toString();
 
-        for(int i = 4;i > intCode.toString().length();i--){
+        for (int i = 4; i > intCode.toString().length(); i--) {
 
-            unitCode = "0"+unitCode;
+            unitCode = "0" + unitCode;
 
         }
         return new ServiceVO<>(SuccessCode.SUCCESS_CODE, SuccessCode.SUCCESS_MESS, unitCode);
@@ -52,18 +53,19 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
-        PageHelper.startPage(page,rows);
-        List<Goods> list = goodsDao.queryStock(codeOrName,goodsTypeId);
+        PageHelper.startPage(page, rows);
+        List<Goods> list = goodsDao.queryStock(codeOrName, goodsTypeId);
         PageInfo<Goods> pageInfo = new PageInfo<Goods>(list);
         long total = pageInfo.getTotal();
         List<Goods> goods = pageInfo.getList();
         Map<String, Object> result = new HashMap<>();
-        result.put("total",total);
-        result.put("rows",goods);
+        result.put("total", total);
+        result.put("rows", goods);
         return result;
     }
 
     @Override
+
     public ServiceVO deleteGoodsById(Integer goodsId) {
 
         Integer rows = goodsDao.deleteGoodsById(goodsId);
@@ -98,6 +100,30 @@ public class GoodsServiceImpl implements GoodsService {
         return pageMap;
     }
 
+    public Map<String, Object> queryDamageListGoods(Integer damageListId) {
+        HashMap<String, Object> map = new HashMap<>();
+        List<DamageListGoods> damageListGoodsList = this.goodsDao.queryDamageListGoods(damageListId);
+        map.put("rows", damageListGoodsList);
+        return map;
+    }
+
+
+    @Override
+    public Map<String, Object> queryOverflowList(String sTime, String eTime) {
+        HashMap<String, Object> map = new HashMap<>();
+        List<OverflowList> overflowLists = this.goodsDao.queryOverflowList(sTime, eTime);
+        map.put("rows", overflowLists);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> queryOverflowListGoods(Integer overflowListId) {
+        HashMap<String, Object> map = new HashMap<>();
+        List<OverflowListGoods> overflowListGoods = this.goodsDao.queryOverflowListGoods(overflowListId);
+        map.put("rows", overflowListGoods);
+        return map;
+    }
+
 
 
 
@@ -119,7 +145,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     public List<GoodsTypeVo> queryAllGoodsType() {
-<<<<<<< HEAD
+
         //方法3.1
         List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
         List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
@@ -131,18 +157,43 @@ public class GoodsServiceImpl implements GoodsService {
         List<Unit> unitList = goodsDao.queryUnitList();
         return unitList;
     }
-=======
 
 
-        //方法1
-        List<GoodsType> goodsTypes = goodsDao.queryAllGoodsTypeByPid(-1);
+    @Transactional
+    @Override
+    public void saveOrUpdateGoods(Goods goods, Integer goodsId) {
 
-        List<GoodsTypeVo> collect = getGoodsTypeVos(goodsTypes);
+        if (goods.getState() == null) {
+            goods.setState(0);
+        }
+        if (goods.getInventoryQuantity() == null) {
+            goods.setInventoryQuantity(0);
+        }
 
-        return collect;
+        if (goodsId != null) {
+            Integer i = goodsDao.updateGoods(goods);
+
+            if (i == 0) {
+                throw new RuntimeException("添加失败");
+            }
+
+
+        } else {
+            Integer i = goodsDao.saveGoods(goods);
+            if (i == 0) {
+                throw new RuntimeException("修改失败");
+            }
+        }
+
     }
 
->>>>>>> upstream/dev
+    @Override
+    public Map<String, Object> queryDamageListGoodsByTime(String sTime, String eTime) {
+        List<DamageList> damageLists = goodsDao.queryDamageListGoodsByTime(sTime,eTime);
+        Map<String, Object> result = new HashMap<>();
+        result.put("rows",damageLists);
+        return result;
+    }
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
@@ -155,10 +206,7 @@ public class GoodsServiceImpl implements GoodsService {
                 default:
                     vo.setState("open");
             }
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/dev
             vo.setIconCls("goods-type");
             HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
             stringIntegerHashMap.put("state", goodsType.getGoodsTypeState());
@@ -173,12 +221,5 @@ public class GoodsServiceImpl implements GoodsService {
             return vo;
         }).collect(Collectors.toList());
     }
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> upstream/dev
 
 }
