@@ -159,6 +159,14 @@ public class GoodsServiceImpl implements GoodsService {
         return result;
     }
 
+    @Override
+    public Map<String, Object> listAlarm() {
+        List<Goods> list = goodsDao.queryListAlarm();
+        Map<String,Object> result = new HashMap<>();
+        result.put("rows",list);
+        return result;
+    }
+
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {
         return goodsTypes.stream().map(goodsType -> {
             GoodsTypeVo vo = new GoodsTypeVo();
@@ -185,5 +193,7 @@ public class GoodsServiceImpl implements GoodsService {
             return vo;
         }).collect(Collectors.toList());
     }
+
+
 
 }

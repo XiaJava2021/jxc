@@ -74,6 +74,7 @@ public class GoodsController {
      * @return
      */
     @PostMapping("goods/listInventory")
+    @ResponseBody
     public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
         return goodsService.listInventory(page, rows, codeOrName, goodsTypeId);
     }
@@ -169,7 +170,11 @@ public class GoodsController {
      * 查询库存报警商品信息
      * @return
      */
-
+    @PostMapping("goods/listAlarm")
+    @ResponseBody
+    public Map<String,Object> listAlarm(){
+        return goodsService.listAlarm();
+    }
 
     /**
      * 报损单查询

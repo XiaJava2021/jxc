@@ -1,15 +1,11 @@
 package com.atguigu.jxc.dao;
 
 import com.atguigu.jxc.entity.*;
-
-
-import com.atguigu.jxc.entity.Unit;
-import org.apache.ibatis.annotations.Mapper;
-
+import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.GoodsType;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description 商品信息
@@ -44,4 +40,6 @@ public interface GoodsDao {
     Integer saveGoods(@Param("goods") Goods goods);
 
     List<DamageList> queryDamageListGoodsByTime(String sTime, String eTime);
+
+    List<Goods> queryListAlarm();
 }

@@ -1,20 +1,9 @@
 package com.atguigu.jxc.service;
 
 import com.atguigu.jxc.domain.ServiceVO;
-
-
-import com.atguigu.jxc.entity.DamageListGoods;
-import org.apache.ibatis.annotations.Param;
-
-
-import com.atguigu.jxc.entity.Unit;
-
-
 import com.atguigu.jxc.entity.Goods;
 import com.atguigu.jxc.entity.Unit;
-
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
-
 
 import java.util.List;
 import java.util.Map;
@@ -46,4 +35,5 @@ public interface GoodsService {
 
     Map<String, Object> queryDamageListGoodsByTime(String sTime, String eTime);
 
+    Map<String, Object> listAlarm();
 }
