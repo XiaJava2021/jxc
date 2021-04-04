@@ -2,6 +2,8 @@ package com.atguigu.jxc.service;
 
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.OverflowList;
+import com.atguigu.jxc.entity.OverflowListGoods;
 import com.atguigu.jxc.entity.Unit;
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 
@@ -44,4 +46,6 @@ public interface GoodsService {
     Map<String, Object> queryDamageListGoodsByTime(String sTime, String eTime);
 
     Map<String, Object> listAlarm();
+
+    void saveOverflowListGoods(String overflowNumber, OverflowList overflowList, List<OverflowListGoods> overflowListGoods);
 }

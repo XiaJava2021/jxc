@@ -15,6 +15,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -201,6 +203,21 @@ public class GoodsServiceImpl implements GoodsService {
         Map<String,Object> result = new HashMap<>();
         result.put("rows",list);
         return result;
+    }
+
+    @Override
+    public void saveOverflowListGoods(String overflowNumber, OverflowList overflowList, List<OverflowListGoods> overflowListGoods) {
+        if (overflowList != null && !StringUtils.isEmpty(overflowList)){
+            overflowList.setOverflowNumber(overflowNumber);
+            goodsDao.saveOverflowList(overflowList);
+            if (!CollectionUtils.isEmpty(overflowListGoods)) {
+                overflowListGoods.forEach(goods -> {
+                    goods.setOverflowListId(overflowList.getOverflowListId());
+                    goodsDao.saveOverflowListGoods(goods);
+                });
+            }
+        }
+
     }
 
     private List<GoodsTypeVo> getGoodsTypeVos(List<GoodsType> goodsTypes) {

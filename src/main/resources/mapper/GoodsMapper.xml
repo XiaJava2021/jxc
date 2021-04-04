@@ -31,6 +31,47 @@
             #{goods.goodsUnit},#{goods.goodsTypeId}
             )
     </insert>
+
+    <insert id="saveOverflowList" useGeneratedKeys="true" keyProperty="overflowListId">
+        INSERT INTO t_overflow_list ( overflow_number, overflow_date, remarks, user_id )
+        VALUES
+            (
+                #{overflowNumber},
+                #{overflowDate},
+                #{remarks},
+                #{userId}
+            )
+    </insert>
+
+    <insert id="saveOverflowListGoods">
+        INSERT INTO t_overflow_list_goods
+            (
+                goods_id,
+                goods_code,
+                goods_name,
+                goods_model,
+                goods_num,
+                goods_unit,
+                price,
+                total,
+                overflow_list_id,
+                goods_type_id
+            )
+        VALUES
+            (
+                #{goodsId},
+                #{goodsCode},
+                #{goodsName},
+                #{goodsModel},
+                #{goodsNum},
+                #{goodsUnit},
+                #{price},
+                #{total},
+                #{overflowListId},
+                #{goodsTypeId}
+            )
+    </insert>
+
     <update id="updateGoods">
         UPDATE t_goods a
         SET
@@ -272,13 +313,6 @@
     <select id="queryUnitList" resultType="com.atguigu.jxc.entity.Unit">
         SELECT t1.unit_id unitId,t1.unit_name unitName
         FROM  t_unit t1
-    </select>
-
-
-    <select id="queryAllGoodsTypeByPid" resultType="com.atguigu.jxc.entity.GoodsType">
-        SELECT a.goods_type_id goodsTypeId,a.goods_type_name goodsTypeName,a.goods_type_state goodsTypeState,a.p_id pId
-        FROM `t_goods_type` a
-        WHERE a.p_id=#{pId}
     </select>
 
     <delete id="deleteGoodsById">

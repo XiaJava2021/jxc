@@ -47,4 +47,8 @@ public interface GoodsDao {
     List<DamageList> queryDamageListGoodsByTime(String sTime, String eTime);
 
     List<Goods> queryListAlarm();
+
+    void saveOverflowList(OverflowList overflowList);
+
+    void saveOverflowListGoods(OverflowListGoods overflowListGoods);
 }

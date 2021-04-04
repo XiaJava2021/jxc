@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         User user = (User)session.getAttribute("currentUser");
         Role role = (Role) session.getAttribute("currentRole");
 
+        map.put("userId",user.getUserId());
         map.put("userName", user.getTrueName());
         map.put("roleName", role.getRoleName());
 

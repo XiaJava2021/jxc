@@ -1,19 +1,27 @@
 package com.atguigu.jxc.controller;
 
+import com.atguigu.jxc.domain.ErrorCode;
 import com.atguigu.jxc.domain.ServiceVO;
 import com.atguigu.jxc.domain.SuccessCode;
 import com.atguigu.jxc.entity.Goods;
+import com.atguigu.jxc.entity.OverflowList;
+import com.atguigu.jxc.entity.OverflowListGoods;
 import com.atguigu.jxc.entity.Unit;
 import com.atguigu.jxc.entity.vo.GoodsTypeVo;
 import com.atguigu.jxc.service.GoodsService;
+import com.atguigu.jxc.service.UserService;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +35,9 @@ public class GoodsController {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private UserService userService;
 
 
     /**
@@ -197,12 +208,40 @@ public class GoodsController {
     }
 
     /**
+     * 新增报溢单
+     * @param overflowNumber
+     * @param overflowList
+     * @param overflowListGoodsStr
+     * @param session
+     * @return
+     */
+    @PostMapping("overflowListGoods/save")
+    @ResponseBody
+    public ServiceVO saveOverflowListGoods(@RequestParam("overflowNumber")String overflowNumber,
+                                           OverflowList overflowList,
+                                           String overflowListGoodsStr,
+                                           HttpSession session){
+        try {
+            Map<String, Object> map = userService.loadUserInfo(session);
+            Gson gson = new Gson();
+            List<OverflowListGoods> overflowListGoods = gson.fromJson(overflowListGoodsStr, new TypeToken<List<OverflowListGoods>>(){}.getType());//gson.fromJson(overflowListGoodsStr, List.class);
+            overflowList.setUserId(Integer.valueOf(map.get("userId").toString()));
+            goodsService.saveOverflowListGoods(overflowNumber,overflowList,overflowListGoods);
+            return new ServiceVO(SuccessCode.SUCCESS_CODE,SuccessCode.SUCCESS_MESS);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+        return new ServiceVO(ErrorCode.REQ_ERROR_CODE,ErrorCode.REQ_ERROR_MESS);
+    }
+
+    /**
      * 报损单查询
      * @param sTime
      * @param eTime
      * @return
      */
     @PostMapping("damageListGoods/list")
+    @ResponseBody
     public Map<String,Object> queryDamageListGoodsByTime(String  sTime, String  eTime){
         return goodsService.queryDamageListGoodsByTime(sTime,eTime);
     }
@@ -214,6 +253,7 @@ public class GoodsController {
      * @return
      */
     @PostMapping("damageListGoods/goodsList")
+    @ResponseBody
     public Map<String, Object> queryDamageListGoods(Integer damageListId) {
         return goodsService.queryDamageListGoods(damageListId);
     }
@@ -226,11 +266,18 @@ public class GoodsController {
      * @return
      */
     @PostMapping("overflowListGoods/list")
+    @ResponseBody
     public Map<String, Object> queryOverflowList(String sTime, String eTime) {
         return this.goodsService.queryOverflowList(sTime, eTime);
     }
 
+    /**
+     * 报溢单商品信息
+     * @param overflowListId
+     * @return
+     */
     @PostMapping("overflowListGoods/goodsList")
+    @ResponseBody
     public Map<String, Object> queryOverflowListGoods(Integer overflowListId) {
         return this.goodsService.queryOverflowListGoods(overflowListId);
     }
