@@ -86,8 +86,9 @@ public class GoodsController {
      */
     @PostMapping("goods/listInventory")
     @ResponseBody
-    public Map<String, Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId) {
-        return goodsService.listInventory(page, rows, codeOrName, goodsTypeId);
+    public Map<String,Object> listInventory(Integer page, Integer rows, String codeOrName, Integer goodsTypeId){
+
+        return goodsService.listInventory(page,rows,codeOrName,goodsTypeId);
     }
 
     /**
