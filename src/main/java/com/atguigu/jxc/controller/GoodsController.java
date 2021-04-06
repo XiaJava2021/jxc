@@ -111,6 +111,7 @@ public class GoodsController {
      *
      * @return
      */
+    @ResponseBody
     @RequestMapping("/getCode")
     @RequiresPermissions(value = "商品管理")
     public ServiceVO getCode() {
@@ -146,6 +147,7 @@ public class GoodsController {
      * @param goodsId 商品ID
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/delete")
     public ServiceVO deleteGoodsById(Integer goodsId){
         ServiceVO serviceVO = goodsService.deleteGoodsById(goodsId);
@@ -161,6 +163,7 @@ public class GoodsController {
      * @param nameOrCode 商品名称或商品编码
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/getNoInventoryQuantity")
     public Map<String,Object> getNoInventoryQuantity(Integer page,Integer rows,String nameOrCode){
         Map<String,Object> noInventoryGoods=goodsService.getNoInventoryQuantity(page,rows,nameOrCode);
@@ -177,6 +180,7 @@ public class GoodsController {
      * @param nameOrCode 商品名称或商品编码
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/getHasInventoryQuantity")
     public Map<String,Object> getHasInventoryQuantity(Integer page,Integer rows,String nameOrCode){
         Map<String,Object> noInventoryGoods=goodsService.getHasInventoryQuantity(page,rows,nameOrCode);
@@ -190,6 +194,7 @@ public class GoodsController {
      * @param purchasingPrice 成本价
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/saveStock")
     public ServiceVO saveStock(@RequestParam("goodsId") Integer goodsId,Integer inventoryQuantity, Double purchasingPrice){
         if(goodsId == null || inventoryQuantity == null || purchasingPrice == null){
@@ -215,6 +220,7 @@ public class GoodsController {
      * @param goodsId 商品ID
      * @return
      */
+    @ResponseBody
     @PostMapping("goods/deleteStock")
     public ServiceVO deleteStock(Integer goodsId){
         if(goodsId == null){
